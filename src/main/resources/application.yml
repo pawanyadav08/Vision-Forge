@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: visionforge-backend
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/visionforge_db
+    username: visionforge_user
+    password: visionforge_secret_2026
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: VisionForgeHikariPool
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 600000
+      connection-timeout: 30000
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+application:
+  security:
+    jwt:
+      secret-key: "visionforge-ai-super-secret-jwt-key-that-is-very-long-2026"
+      expiration: 86400000
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+  api-docs:
+    path: /v3/api-docs
+  show-actuator: false
+
+logging:
+  level:
+    com.visionforge: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: INFO
+  pattern:
+    console: "%clr(%d{HH:mm:ss}){faint} %clr(%-5level){highlight} %clr(%-40.40logger{39}){cyan} : %msg%n"
