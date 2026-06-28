@@ -1,35 +1,34 @@
-target/
-!.mvn/wrapper/maven-wrapper.jar
-/static/
-/templates/
+# ── VisionForge AI Monorepo Gitignore ──
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
+# IntelliJ IDEA
 .idea/
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
+# VS Code
 .vscode/
 
-### Log files ###
+# System files
 *.log
+.DS_Store
+Thumbs.db
+
+# ── Backend specific ──
+visionforge-backend/target/
+visionforge-backend/!.mvn/wrapper/maven-wrapper.jar
+visionforge-backend/build/
+
+# ── Frontend specific ──
+visionforge-frontend/node_modules/
+visionforge-frontend/dist/
+visionforge-frontend/dist-ssr/
+visionforge-frontend/*.local
+visionforge-frontend/.eslintcache
+
+# Local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

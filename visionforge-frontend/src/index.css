@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #07070f;
+    color: #e2e8f0;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0d0d1a;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #7c3aed;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #8b5cf6;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply relative px-6 py-3 rounded-xl font-semibold text-white
+           bg-gradient-to-r from-violet-600 to-purple-600
+           hover:from-violet-500 hover:to-purple-500
+           shadow-glow-sm hover:shadow-glow-md
+           transition-all duration-300 ease-out
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none
+           overflow-hidden;
+  }
+
+  .btn-secondary {
+    @apply px-5 py-2.5 rounded-xl font-medium text-slate-300
+           bg-dark-600 border border-dark-400
+           hover:bg-dark-500 hover:border-violet-600 hover:text-white
+           transition-all duration-200;
+  }
+
+  .glass-card {
+    @apply bg-dark-700/80 backdrop-blur-xl border border-white/5
+           rounded-2xl shadow-xl;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl
+           bg-dark-600/80 border border-dark-400
+           text-white placeholder-slate-500
+           focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50
+           transition-all duration-200;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-slate-400 mb-1.5;
+  }
+
+  .glow-text {
+    @apply bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400
+           bg-clip-text text-transparent;
+  }
+
+  .shimmer-bg {
+    background: linear-gradient(90deg, #1a1a2e 25%, #22223b 50%, #1a1a2e 75%);
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+}
+
+/* Glowing orb background effects */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.orb-1 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #7c3aed, transparent);
+  top: -200px;
+  right: -200px;
+  animation: float 8s ease-in-out infinite;
+}
+
+.orb-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #a855f7, transparent);
+  bottom: -100px;
+  left: -100px;
+  animation: float 10s ease-in-out infinite reverse;
+}
+
+/* Loading spinner */
+.spinner {
+  border: 3px solid rgba(124, 58, 237, 0.2);
+  border-top-color: #7c3aed;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Image card hover */
+.img-card {
+  @apply relative overflow-hidden rounded-xl cursor-pointer
+         transition-all duration-300
+         hover:scale-105 hover:shadow-glow-sm;
+}
+
+.img-card::after {
+  content: '';
+  @apply absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent
+         opacity-0 hover:opacity-100 transition-opacity duration-300;
+}
