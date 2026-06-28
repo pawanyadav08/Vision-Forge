@@ -22,6 +22,12 @@ import java.util.Map;
  * @RestControllerAdvice intercepts exceptions thrown from any @RestController
  * and maps them to structured ErrorResponse JSON — one consistent format
  * for every error the API can produce.
+ *
+ * Phase 3 additions: handlers for image-specific exceptions
+ *   (#9)  ImageNotFoundException       → 404
+ *   (#10) ImageAccessDeniedException   → 403
+ *   (#11) InsufficientCreditsException → 402
+ *   (#12) ImageGenerationException     → 502
  */
 @Slf4j
 @RestControllerAdvice
@@ -151,7 +157,80 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 
-    // ── 8. CATCH-ALL: prevents raw stack traces leaking to client ─────────
+    // ═════════════════════════════════════════════════════════════════════════
+    // Phase 3 — Image-specific exception handlers
+    // ═════════════════════════════════════════════════════════════════════════
+
+    // ── 8. IMAGE NOT FOUND ────────────────────────────────────────────────
+    @ExceptionHandler(ImageNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleImageNotFound(
+            ImageNotFoundException ex,
+            HttpServletRequest request) {
+
+        ErrorResponse body = ErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Image Not Found")
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    // ── 9. IMAGE ACCESS DENIED (non-owner tries to delete) ───────────────
+    @ExceptionHandler(ImageAccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleImageAccessDenied(
+            ImageAccessDeniedException ex,
+            HttpServletRequest request) {
+
+        ErrorResponse body = ErrorResponse.builder()
+                .status(HttpStatus.FORBIDDEN.value())
+                .error("Forbidden")
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        log.warn("Image ownership violation [{}]: {}", request.getRequestURI(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
+    }
+
+    // ── 10. INSUFFICIENT CREDITS ──────────────────────────────────────────
+    // HTTP 402 Payment Required: the standard code for quota/billing limits
+    @ExceptionHandler(InsufficientCreditsException.class)
+    public ResponseEntity<ErrorResponse> handleInsufficientCredits(
+            InsufficientCreditsException ex,
+            HttpServletRequest request) {
+
+        ErrorResponse body = ErrorResponse.builder()
+                .status(HttpStatus.PAYMENT_REQUIRED.value())
+                .error("Insufficient Credits")
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        log.warn("Insufficient credits [{}]: {}", request.getRequestURI(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).body(body);
+    }
+
+    // ── 11. IMAGE GENERATION FAILURE (provider error / timeout) ──────────
+    // HTTP 502 Bad Gateway: our server received a bad response from upstream (HF)
+    @ExceptionHandler(ImageGenerationException.class)
+    public ResponseEntity<ErrorResponse> handleImageGenerationException(
+            ImageGenerationException ex,
+            HttpServletRequest request) {
+
+        ErrorResponse body = ErrorResponse.builder()
+                .status(HttpStatus.BAD_GATEWAY.value())
+                .error("Image Generation Failed")
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        log.error("Image generation failed [{}]: {}", request.getRequestURI(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(body);
+    }
+
+    // ── 12. CATCH-ALL: prevents raw stack traces leaking to client ────────
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(
             Exception ex,

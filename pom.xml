@@ -17,7 +17,7 @@
     <artifactId>visionforge-backend</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>VisionForge AI Backend</name>
-    <description>Phase 2: Auth Backend for VisionForge AI</description>
+    <description>Phase 3: AI Image Generation — VisionForge AI Backend</description>
     <packaging>jar</packaging>
 
     <properties>
@@ -33,6 +33,18 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!--
+            Spring WebFlux: Brings in WebClient — Spring's modern, reactive HTTP client.
+            We use WebClient in *blocking* mode here to call the Hugging Face Inference API.
+            Unlike deprecated RestTemplate, WebClient supports:
+              - Configurable timeouts
+            Note: This does NOT switch the app to reactive mode; Tomcat still serves requests.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
         <!-- Spring Security -->

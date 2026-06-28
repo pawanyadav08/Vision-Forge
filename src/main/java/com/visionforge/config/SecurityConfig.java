@@ -48,6 +48,8 @@ public class SecurityConfig {
             "/swagger-ui.html",
             "/v3/api-docs/**",    // OpenAPI JSON spec
             "/actuator/health",   // Health check
+            // NOTE: /api/images/** is intentionally NOT here — all image
+            // endpoints require a valid JWT (enforced by anyRequest().authenticated())
     };
 
     @Bean
